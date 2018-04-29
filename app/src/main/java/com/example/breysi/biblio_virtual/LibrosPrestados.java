@@ -12,23 +12,13 @@ import android.widget.TextView;
  */
 
 public class LibrosPrestados  extends AppCompatActivity {
-    ListView listaVista;
-    TextView titulo,autor,fechaEntrega;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.libros_prestados);
 
+
     }
-
-/* @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.listalibrosprestados);
-
-        Usuario user = (Usuario) getIntent().getSerializableExtra("usuarioo");
-        // tx.setText(user.getNombre());
-
-    }*/
 }

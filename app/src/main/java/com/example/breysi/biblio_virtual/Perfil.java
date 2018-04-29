@@ -21,8 +21,6 @@ import java.util.ArrayList;
 public class Perfil extends AppCompatActivity implements View.OnClickListener {
 
     TextView tx;
-    public ArrayList<String> listaLibrosPrestados = new ArrayList<>();
-    Usuario u;
 
     //--------------------------------------------------------
     ImageButton btn_libros_prestados;
@@ -30,7 +28,10 @@ public class Perfil extends AppCompatActivity implements View.OnClickListener {
     ImageButton btn_cuenta;
     ImageButton btn_configuracion;
     Usuario user;
-
+    String nom_user;
+    //---------------------------------------------------------
+    public ArrayList<LibrosPrestados> listaLibrosPrestados = new ArrayList<>();
+    int posicion=-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,22 +48,13 @@ public class Perfil extends AppCompatActivity implements View.OnClickListener {
         btn_anadir_libros.setOnClickListener(this);
         btn_cuenta.setOnClickListener(this);
         btn_configuracion.setOnClickListener(this);
-
-        // String nombre= getIntent().getStringExtra("nombre"); // SOLO POR EL NOMBRE
+       // Recogemos el usuario
         user = (Usuario) getIntent().getSerializableExtra("usuarioo");
         String nom_user = user.getDni();
         tx.setText(user.getNombre());
         // tx.setText(nombre); //  SOLO POR EL NOMBRE
-
-        Toast.makeText(Perfil.this, user.getCurso(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(Perfil.this, user.getNombre(), Toast.LENGTH_SHORT).show();
-/*
-     Intent i = getIntent();
-     listUsuario = i.getStringArrayListExtra("lista");*/
-
-        // autentificar_usuario(nombre);  SOLO POR EL NOMBRE
-
-
+       // Toast.makeText(Perfil.this, user.getCurso(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(Perfil.this,"Bienvenido " +user.getNombre(), Toast.LENGTH_SHORT).show();
     }
 
 
@@ -73,19 +65,20 @@ public class Perfil extends AppCompatActivity implements View.OnClickListener {
         DatabaseReference myRef = database.getReference();
 
         final Query q_librosPrestados = myRef.child("libros_prestados").orderByChild("id_usuario").equalTo(user.getDni());
-
-        Toast.makeText(Perfil.this, user.getDni(), Toast.LENGTH_LONG).show();
+        //consulta sobre los librosPrestados que tiene el usuario, usando su dni
         q_librosPrestados.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+            //////    posicion =-1;
                 if (dataSnapshot.exists()) {
+                    //
                     Libro tokenLibro = new Libro();
-                    //String nombre_usuario = "", apellido_usuario = "";
                     for (DataSnapshot item : dataSnapshot.getChildren()) {
-                        tokenLibro.setAutor((String) item.child("autor").getValue());
                         tokenLibro.setTitulo((String) item.child("titulo").getValue());
+                        tokenLibro.setAutor((String) item.child("autor").getValue());
                         tokenLibro.setEditorial((String) item.child("editorial").getValue());
-                      //  listaLibrosPrestados.add(tokenLibro);
+                        tokenLibro.setPortada((String)item.child("portada").getValue());
+
 
                     }
                 }

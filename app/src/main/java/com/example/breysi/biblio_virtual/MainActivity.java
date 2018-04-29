@@ -98,13 +98,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DatabaseReference myRef = database.getReference();
 
         final Query q_email = myRef.child("usuario").orderByChild("email").equalTo(auth_email);
-
-        final Query q_pass = myRef.child("usuario").orderByChild("clave").equalTo(auth_password);
-
         emailUsuario = auth_email;
         claveUsuario = auth_password;
-        //consulta
-
+        //consulta Si el usuario esta en la base de datos
 
         q_email.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -127,20 +123,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         tokenUser.setProvincia((String)item.child("provincia").getValue());
                         tokenUser.setTelefono((String)item.child("telefono").getValue());
                         //password
-
                         if(tokenUser.getClave().equals(claveUsuario)){
 
                             claveCorrecta = true;
                         }
-
-                        listUsuario.add(tokenUser);
                     }
                     //q_pass.getRef().getDatabase();
                     if (claveCorrecta){
                         Intent intent;
                         intent = new Intent(MainActivity.this, Perfil.class);
                         //intent.putExtra("nombre", tokenUser.getNombre());
-                        intent.putExtra("usuarioo", tokenUser);
+                        intent.putExtra("usuarioo", tokenUser);//envia el objecto tokenUser
 
                         Toast.makeText(MainActivity.this, "Clave correcto", Toast.LENGTH_LONG).show();
                         startActivity(intent);
@@ -203,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             status = "Token: null";
         }
-
         // Enable/disable sign-in button and show the token
         findViewById(R.id.btn_ingresar).setEnabled((mCustomToken != null));
         ((AutoCompleteTextView) findViewById(R.id.id_usuario)).setText(status);

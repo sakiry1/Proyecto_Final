@@ -6,14 +6,18 @@ package com.example.breysi.biblio_virtual;
 
 class Libro {
 
-private String titulo;
-private String autor;
-private String anyEdicion;
-private String editorial;
-private String genero;
-private String idioma;
-private String npaginas;
-private String portada;
+    private String titulo;
+    private String autor;
+    private String anyEdicion;
+    private String editorial;
+    private String genero;
+    private String idioma;
+    private String npaginas;
+    private String portada;
+    private int id;
+
+    public Libro() {
+    }
 
     public Libro(String titulo, String autor, String anyEdicion, String editorial, String genero, String idioma, String npaginas, String portada) {
         this.titulo = titulo;
@@ -24,10 +28,6 @@ private String portada;
         this.idioma = idioma;
         this.npaginas = npaginas;
         this.portada = portada;
-    }
-
-    public Libro(){
-
     }
 
     public String getTitulo() {
@@ -92,5 +92,13 @@ private String portada;
 
     public void setPortada(String portada) {
         this.portada = portada;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
