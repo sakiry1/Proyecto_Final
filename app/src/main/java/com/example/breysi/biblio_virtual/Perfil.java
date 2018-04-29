@@ -78,7 +78,7 @@ public class Perfil extends AppCompatActivity implements View.OnClickListener {
                         tokenLibro.setAutor((String) item.child("autor").getValue());
                         tokenLibro.setEditorial((String) item.child("editorial").getValue());
                         tokenLibro.setPortada((String)item.child("portada").getValue());
-
+//listaLibrosPrestados();
 
                     }
                 }
