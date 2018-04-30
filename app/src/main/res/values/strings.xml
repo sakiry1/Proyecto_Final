@@ -16,6 +16,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="auth_failed">errooooooooooooooooooooor</string>
-    <string name="auth_sucess">Comprobando</string>
+    <string name="auth_failed">Error.... Identificador</string>
+    <string name="auth_sucess">Comprobando....</string>
+    <string name="prestamo_failed">No tienes ningun préstamo</string>
 </resources>

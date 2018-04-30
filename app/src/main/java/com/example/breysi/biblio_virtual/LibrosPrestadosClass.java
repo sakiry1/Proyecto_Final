@@ -2,35 +2,35 @@ package com.example.breysi.biblio_virtual;
 
 import java.util.Date;
 
-public class librosPrestadosClass {
-    private Date fechaPrestamo;
-    private Date  fechaDevolucion ;
+public class LibrosPrestadosClass {
+    private String fechaPrestamo;
+    private String  fechaDevolucion ;
     private Libro idlibro;
     private Usuario  idUsuario;
 
-    public librosPrestadosClass() {
+    public LibrosPrestadosClass() {
     }
 
-    public librosPrestadosClass(Date fechaPrestamo, Date  fechaDevolucion, Libro idlibro, Usuario idUsuario) {
-        this.fechaDevolucion = fechaDevolucion;
+    public LibrosPrestadosClass(String fechaPrestamo, String fechaDevolucion, Libro idlibro, Usuario idUsuario) {
         this.fechaPrestamo = fechaPrestamo;
+        this.fechaDevolucion = fechaDevolucion;
         this.idlibro = idlibro;
         this.idUsuario = idUsuario;
     }
 
-    public Date getFechaPrestamo() {
+    public String getFechaPrestamo() {
         return fechaPrestamo;
     }
 
-    public void setFechaPrestamo(Date fechaPrestamo) {
+    public void setFechaPrestamo(String fechaPrestamo) {
         this.fechaPrestamo = fechaPrestamo;
     }
 
-    public Date getFechaDevolucion() {
+    public String getFechaDevolucion() {
         return fechaDevolucion;
     }
 
-    public void setFechaDevolucion(Date fechaDevolucion) {
+    public void setFechaDevolucion(String fechaDevolucion) {
         this.fechaDevolucion = fechaDevolucion;
     }
 

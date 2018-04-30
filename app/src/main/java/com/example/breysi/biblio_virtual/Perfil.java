@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
 public class Perfil extends AppCompatActivity implements View.OnClickListener {
@@ -63,24 +64,28 @@ public class Perfil extends AppCompatActivity implements View.OnClickListener {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference();
-
-        final Query q_librosPrestados = myRef.child("libros_prestados").orderByChild("id_usuario").equalTo(user.getDni());
         //consulta sobre los librosPrestados que tiene el usuario, usando su dni
+        final Query q_librosPrestados = myRef.child("libros_prestados").orderByChild("id_usuario").equalTo(user.getDni());
+
         q_librosPrestados.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
             //////    posicion =-1;
                 if (dataSnapshot.exists()) {
-                    //
-                    Libro tokenLibro = new Libro();
-                    for (DataSnapshot item : dataSnapshot.getChildren()) {
-                        tokenLibro.setTitulo((String) item.child("titulo").getValue());
-                        tokenLibro.setAutor((String) item.child("autor").getValue());
-                        tokenLibro.setEditorial((String) item.child("editorial").getValue());
-                        tokenLibro.setPortada((String)item.child("portada").getValue());
-//listaLibrosPrestados();
 
+                    LibrosPrestadosClass prestadosClass = new LibrosPrestadosClass();
+                    for (DataSnapshot item : dataSnapshot.getChildren()) {
+                        prestadosClass.setIdlibro((Libro) item.child("id_libro").getValue());
+                        prestadosClass.setFechaPrestamo((String)item.child("fecha_prestamo").getValue());
+                        prestadosClass.setFechaPrestamo((String) item.child("fecha_devolucion").getValue());
                     }
+                 Intent intent = new Intent(Perfil.this,LibrosPrestados.class);
+
+                }
+                else{
+                    //si el usuario no tiene NADA prestado te envia
+                    Intent intent= new Intent(Perfil.this,LibrosPrestados.class);
+                    intent .putExtra("Noprestamos",R.string.prestamo_failed);
                 }
             }
 
