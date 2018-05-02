@@ -1,11 +1,19 @@
 package com.example.breysi.biblio_virtual;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.QuickContactBadge;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,11 +26,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Perfil extends AppCompatActivity implements View.OnClickListener {
 
     TextView tx;
-
+    private DatabaseReference myRef;
     //--------------------------------------------------------
     ImageButton btn_libros_prestados;
     ImageButton btn_anadir_libros;
@@ -31,9 +40,10 @@ public class Perfil extends AppCompatActivity implements View.OnClickListener {
     Usuario user;
     String nom_user;
     //---------------------------------------------------------
-    public ArrayList<LibrosPrestados> listaLibrosPrestados = new ArrayList<>();
+    public ArrayList<LibrosPrestadosClass> listaLibrosPrestados = new ArrayList<>();
+    LibrosPrestadosClass prestadosClass = new LibrosPrestadosClass();
     int posicion=-1;
-
+    ListView listaPrestados;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,38 +60,51 @@ public class Perfil extends AppCompatActivity implements View.OnClickListener {
         btn_cuenta.setOnClickListener(this);
         btn_configuracion.setOnClickListener(this);
        // Recogemos el usuario
-        user = (Usuario) getIntent().getSerializableExtra("usuarioo");
-        String nom_user = user.getDni();
-        tx.setText(user.getNombre());
-        // tx.setText(nombre); //  SOLO POR EL NOMBRE
+        user = (Usuario) getIntent().getParcelableExtra("usuarioo");
+        String nom_user = user.getNombre();
+        //tx.setText(user.getNombre());
+         tx.setText(nom_user); //  SOLO POR EL NOMBRE
        // Toast.makeText(Perfil.this, user.getCurso(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(Perfil.this,"Bienvenido " +user.getNombre(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(Perfil.this,"Bienvenido " +user.getApellido(), Toast.LENGTH_SHORT).show();
+        Log.i("estudiante", user.getApellido());
+        librosPrestados();
     }
-
 
     public void librosPrestados() {
         //----------LIBRO------------------------
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference();
+        myRef = FirebaseDatabase.getInstance().getReference();
         //consulta sobre los librosPrestados que tiene el usuario, usando su dni
         final Query q_librosPrestados = myRef.child("libros_prestados").orderByChild("id_usuario").equalTo(user.getDni());
 
-        q_librosPrestados.addListenerForSingleValueEvent(new ValueEventListener() {
+        q_librosPrestados.addValueEventListener(new ValueEventListener() {//valueEventListener ya que leera una lista de datos o no
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-            //////    posicion =-1;
+               // posicion =-1;
+
                 if (dataSnapshot.exists()) {
+                    //contiene all childrens bajo el nodo libros_prestados
+                    for (DataSnapshot snapshotlibrosPrestados: dataSnapshot.getChildren()) {
+                      // prestadosClass.setFecha_prestamo((String) snapshotlibrosPrestados.child("fecha_prestamo").getValue());
+                      // prestadosClass.setFecha_devolución((String) snapshotlibrosPrestados.child("fecha_devolución").getValue());
+                     //prestadosClass.setId_libro((Usuario) snapshotlibrosPrestados.child("id_usuario").getValue());
+                       // prestadosClass.setIdlibro((Libro) snapshotlibrosPrestados.child("id_libro").getValue());
+                        prestadosClass = snapshotlibrosPrestados.getValue(LibrosPrestadosClass.class);
+                        //Long l = (Long) snapshotlibrosPrestados.child("id").getValue();
+                      //  prestadosClass.setId(l.intValue());
 
-                    LibrosPrestadosClass prestadosClass = new LibrosPrestadosClass();
-                    for (DataSnapshot item : dataSnapshot.getChildren()) {
-                        prestadosClass.setIdlibro((Libro) item.child("id_libro").getValue());
-                        prestadosClass.setFechaPrestamo((String)item.child("fecha_prestamo").getValue());
-                        prestadosClass.setFechaPrestamo((String) item.child("fecha_devolucion").getValue());
+                        listaLibrosPrestados.add(prestadosClass);
+                        // posicion++;
+                        ;
                     }
-                 Intent intent = new Intent(Perfil.this,LibrosPrestados.class);
-
+                 //   Intent intent= new Intent(Perfil.this,LibrosPrestados.class);
+                   // intent.putExtra("listaPrestados",listaLibrosPrestados);
+                 /*   Log.e("tamañolista","--->"+listaLibrosPrestados.size());
+                    Log.e("librodatos : ","-->"+listaLibrosPrestados+"--"+
+                            prestadosClass.getFecha_prestamo()+"--"+
+                            prestadosClass.getFecha_devolución()+"--");
+                    Log.e("datos2: ",dataSnapshot.getValue().toString());*/
                 }
+
                 else{
                     //si el usuario no tiene NADA prestado te envia
                     Intent intent= new Intent(Perfil.this,LibrosPrestados.class);
@@ -97,6 +120,7 @@ public class Perfil extends AppCompatActivity implements View.OnClickListener {
         });
     }
 
+
     @Override
     public void onClick(View view) {
         Intent intent;
@@ -105,6 +129,7 @@ public class Perfil extends AppCompatActivity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.btn_libros_prestados:
                 intent = new Intent(Perfil.this, LibrosPrestados.class);
+                intent.putExtra("listaPrestados",listaLibrosPrestados);
                 startActivity(intent);
                 break;
             case R.id.btn_buscar_anadir_libros:
@@ -120,6 +145,7 @@ public class Perfil extends AppCompatActivity implements View.OnClickListener {
                 Toast.makeText(Perfil.this, "Error", Toast.LENGTH_LONG).show();
         }
     }
+
 }
 
 
@@ -168,3 +194,73 @@ public class Perfil extends AppCompatActivity implements View.OnClickListener {
 
             }
         }); */
+
+
+   /*   ArrayList<HashMap<String, String>> valores = new ArrayList<HashMap<String, String>>();
+                    ArrayList<LibrosPrestadosClass> listaLP = new ArrayList<LibrosPrestadosClass>();
+                    for(final LibrosPrestadosClass prestadosClass: listaLP){
+                        String prestamo = prestadosClass.getFechaPrestamo();
+                        String entrega = prestadosClass.getFechaDevolucion();
+                        Libro nom_libro= prestadosClass.getIdlibro();
+
+                        HashMap hashMap = new HashMap<String, String>();
+                        hashMap.put("fecha_prestamo", prestamo);
+                        hashMap.put("fecha_devolución", entrega);
+                        hashMap.put("id_libro", nom_libro);
+                        valores.add(hashMap);
+
+                        ListAdapter adapter = new SimpleAdapter(
+                                Perfil.this,valores,
+                                R.layout.lista_libro,
+                                new String[]{"fecha_prestamo","fecha_devolución","id_libro"},
+                                new int[]{R.id.tv_fentrega,R.id.tv_titulo,R.id.tv_autor});
+                        listaPrestados.setAdapter(adapter);
+                        listaPrestados.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            }
+                        });}*/
+
+/*
+    public void librosPrestados() {
+        //----------LIBRO------------------------
+        myRef = FirebaseDatabase.getInstance().getReference();
+        //consulta sobre los librosPrestados que tiene el usuario, usando su dni
+        final Query q_librosPrestados = myRef.child("libros_prestados").orderByChild("id_usuario").equalTo(user.getDni());
+
+        q_librosPrestados.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //posicion =-1;
+                if (dataSnapshot.exists()) {
+                    DataSnapshot libroPrestados= dataSnapshot.child("libros_prestados");
+                    Iterable<DataSnapshot> libroPrestadoChildren = libroPrestados.getChildren();
+                    //contiene all childrens bajo el nodo libros_prestados
+                    for (DataSnapshot snapshotlibrosPrestados: libroPrestadoChildren) {
+                        LibrosPrestadosClass lpc = dataSnapshot.getValue(LibrosPrestadosClass.class);
+
+                        listaLibrosPrestados.add(lpc);
+                        // posicion++;
+                    }
+                    Intent intent= new Intent(Perfil.this,LibrosPrestados.class);
+                    intent.putExtra("listaPrestados",listaLibrosPrestados);
+                    Log.e("tamañolista","--->"+listaLibrosPrestados.size());
+                    Log.e("tamaño2","--->"+libroPrestadoChildren);
+
+                }
+                else{
+                    //si el usuario no tiene NADA prestado te envia
+                    Intent intent= new Intent(Perfil.this,LibrosPrestados.class);
+                    intent .putExtra("Noprestamos",R.string.prestamo_failed);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
+    }
+    */

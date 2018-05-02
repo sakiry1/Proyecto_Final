@@ -1,25 +1,27 @@
 package com.example.breysi.biblio_virtual;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * Created by breysi on 23/03/2018.
  */
 
-class Libro {
-
-    private String titulo;
+class Libro implements Parcelable {
     private String autor;
     private String anyEdicion;
     private String editorial;
     private String genero;
+    private String id;
     private String idioma;
     private String npaginas;
     private String portada;
-    private int id;
-
+    private String titulo;
     public Libro() {
     }
-
-    public Libro(String titulo, String autor, String anyEdicion, String editorial, String genero, String idioma, String npaginas, String portada) {
+  /*  public Libro(String titulo, String autor, String anyEdicion, String editorial, String genero, String idioma, String npaginas, String portada, int id) {
         this.titulo = titulo;
         this.autor = autor;
         this.anyEdicion = anyEdicion;
@@ -28,6 +30,19 @@ class Libro {
         this.idioma = idioma;
         this.npaginas = npaginas;
         this.portada = portada;
+        this.id = id;
+    }*/
+    public Libro(Parcel in) {
+
+        this.autor = in.readString();
+        this.anyEdicion = in.readString();
+        this.editorial = in.readString();
+        this.genero = in.readString();
+        this.id = in.readString();
+        this.idioma = in.readString();
+        this.npaginas = in.readString();
+        this.portada = in.readString();
+        this.titulo = in.readString();
     }
 
     public String getTitulo() {
@@ -94,11 +109,56 @@ class Libro {
         this.portada = portada;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
+
+    public static final Parcelable.Creator<Libro> CREATOR = new Parcelable.Creator<Libro>() {
+        @Override
+        public Libro createFromParcel(Parcel in) {
+            return new Libro(in);
+        }
+
+        @Override
+        public Libro[] newArray(int size) {
+            return new Libro[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(autor);
+        dest.writeString(anyEdicion);
+        dest.writeString(editorial);
+        dest.writeString(genero);
+        dest.writeString(id);
+        dest.writeString(idioma);
+        dest.writeString(npaginas);
+        dest.writeString(portada);
+        dest.writeString(titulo);
+    }
+/*    public Libro() {
+    }
+
+    public Libro(String titulo, String autor, String anyEdicion, String editorial, String genero, String idioma, String npaginas, String portada) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.anyEdicion = anyEdicion;
+        this.editorial = editorial;
+        this.genero = genero;
+        this.idioma = idioma;
+        this.npaginas = npaginas;
+        this.portada = portada;
+    }
+*/
+
 }

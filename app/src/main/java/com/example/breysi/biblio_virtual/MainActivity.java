@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
 
@@ -74,11 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             this.onStart();
             autentificar_usuario(usuario, pass);
-
-
         }
-
-
     }
 
     @Override
@@ -109,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (dataSnapshot.exists()) {
                     Usuario tokenUser =  new Usuario(); ;
-
                     //String nombre_usuario = "", apellido_usuario = "";
                     for (DataSnapshot item : dataSnapshot.getChildren()) {
                         tokenUser.setApellido((String) item.child("apellido").getValue());
@@ -117,14 +113,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         tokenUser.setCurso((String) item.child("curso").getValue());
                         tokenUser.setDni((String)item.child("dni").getValue());
                         tokenUser.setEmail((String)item.child("email").getValue());
-                       // tokenUser.setFechaNacimiento((Date) item.child("fechaNacimiento").getValue());
+                       tokenUser.setFechaNacimiento((String) item.child("fechaNacimiento").getValue());
                         tokenUser.setNombre((String)item.child("nombre").getValue());
                         tokenUser.setPoblacion((String)item.child("poblacion").getValue());
                         tokenUser.setProvincia((String)item.child("provincia").getValue());
                         tokenUser.setTelefono((String)item.child("telefono").getValue());
                         //password
                         if(tokenUser.getClave().equals(claveUsuario)){
-
                             claveCorrecta = true;
                         }
                     }
@@ -135,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //intent.putExtra("nombre", tokenUser.getNombre());
                         intent.putExtra("usuarioo", tokenUser);//envia el objecto tokenUser
 
-                        Toast.makeText(MainActivity.this, "Clave correcto", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(MainActivity.this, "Clave correcto", Toast.LENGTH_LONG).show();
                         startActivity(intent);
                     } else {
                         Toast.makeText(MainActivity.this, "Clave incorrecto", Toast.LENGTH_LONG).show();
@@ -153,11 +148,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-    }
-
-    public void limpiarcampos() {
-
-
     }
 
     private void startSignIn() {
